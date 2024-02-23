@@ -1,0 +1,2 @@
+# This file is used internally by FFMPEG.
+file 'file:D:/Manim/ManimAndCopilot/pendulusDoubleVetical/media/videos/pendulus1/1080p60/partial_movie_files/PendulusScene/3977891868_123554531_1442193053.mp4'
