@@ -7,24 +7,23 @@ class PendulusGroup(VGroup):
     }
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        dot=self.put_dot()
-        line=self.put_line(dot)
-        self.add(line, dot)
+        self.time=self.CONFIG['time']
+        self.put_dot()
+        self.put_line()
+        self.line.add_updater(self.update_pendulus)
     def put_dot(self):
-        dot=Dot(color=BLUE).move_to(self.get_center())
-        return dot
-    def put_line(self, dot):
-        line=Line(self.get_center(), self.get_center()+DOWN*2)
-        dot.add_updater(lambda d: d.move_to(line.get_end()))
-        line.add_updater(self.update_pendulus)
-        line.dot=dot
-        return line
-    def update_pendulus(self, dt):
-        self.time += dt
-        angle_range = np.radians([120, 240])  # Oscilar entre el primer y cuarto cuadrante
-        angle = np.mean(angle_range) + np.diff(angle_range)/2 * np.sin(2 * np.pi * 0.5 * self.time)
-        self[1].set_angle(angle + PI / 2)
-
+        self.dot=Dot(color=BLUE).move_to(self.get_center())
+        self.add(self.dot)
+    def put_line(self):
+        self.line=Line(self.get_center(), self.get_center()+DOWN*2)
+        self.dot.add_updater(lambda d: d.move_to(self.line.get_end()))
+        self.add(self.line)
+    def update_pendulus(self, mob, dt):
+        self.time+=dt
+        angle_range=np.radians([120, 240])
+        angle=np.mean(angle_range)+np.diff(angle_range)/2*np.sin(2*np.pi*0.5*self.time)
+        mob.set_angle(angle+PI/2)
+        self.dot.move_to(self.line.get_end())
 class PendulusScene(Scene):
     def construct(self):
         pendulus=PendulusGroup()
