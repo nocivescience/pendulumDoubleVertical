@@ -5,13 +5,13 @@ class PendulusGroup(VGroup):
     CONFIG={
         'time': 0,
     }
-    def __init__(self, **kwargs):
+    def __init__(self, longitud, **kwargs):
         super().__init__(**kwargs)
         self.time=self.CONFIG['time']
         self.derecha=True
         self.frequency=0.5
         self.color=BLUE
-        self.longitud=2
+        self.longitud=longitud
         self.put_dot()
         self.put_line()
         self[1].add_updater(self.update_pendulus)
@@ -42,17 +42,16 @@ class PendulusScene(Scene):
     }
     def construct(self):
         frequencies= [freq for freq in np.linspace(0.1, 1, 20)]
-        longitudes= [l for l in np.linspace(.5, 20.5, 20)]
+        longitudes= ([l for l in np.linspace(2, .2, 20)])
         colors=it.cycle(self.CONFIGURATION['colors'])
         pendulos=VGroup()
         for side in [True, False]:
             for freq, long in zip(frequencies, longitudes):
-                pendulus=PendulusGroup()
+                pendulus=PendulusGroup(longitud=long)
                 pendulus.derecha=side
                 pendulus.frequency=freq/4
-                pendulus.longitud=long
                 pendulus[0].color=next(colors)
                 pendulus[0].set_z_index(-1)
                 pendulos.add(pendulus)
         self.add(pendulos)
-        self.wait(3)
+        self.wait(90)
