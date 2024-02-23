@@ -8,9 +8,10 @@ class PendulusGroup(VGroup):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.time=self.CONFIG['time']
+        self.frequency=0.5
         self.put_dot()
         self.put_line()
-        self.line.add_updater(self.update_pendulus)
+        self[1].add_updater(self.update_pendulus)
     def put_dot(self):
         self.dot=Dot(color=BLUE).move_to(self.get_center())
         self.add(self.dot)
@@ -19,8 +20,8 @@ class PendulusGroup(VGroup):
         self.dot.add_updater(lambda d: d.move_to(self.line.get_end()))
         self.add(self.line)
     def update_pendulus(self, mob, dt):
-        self.time+=dt
-        angle_range=np.radians([120, 240])
+        self.time+=dt*self.frequency
+        angle_range=np.radians([3, 177])
         angle=np.mean(angle_range)+np.diff(angle_range)/2*np.sin(2*np.pi*0.5*self.time)
         mob.set_angle(angle+PI/2)
         self.dot.move_to(self.line.get_end())
