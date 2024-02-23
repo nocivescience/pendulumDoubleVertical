@@ -11,6 +11,7 @@ class PendulusGroup(VGroup):
         self.derecha=True
         self.frequency=0.5
         self.color=BLUE
+        self.longitud=2
         self.put_dot()
         self.put_line()
         self[1].add_updater(self.update_pendulus)
@@ -18,7 +19,7 @@ class PendulusGroup(VGroup):
         self.dot=Dot(color=self.color, radius=.04).move_to(self.get_center())
         self.add(self.dot)
     def put_line(self):
-        self.line=Line(self.get_center(), self.get_center()+DOWN*2, stroke_width=0.07)
+        self.line=Line(self.get_center(), self.get_center()+DOWN*self.longitud, stroke_width=0.07)
         self.dot.add_updater(lambda d: d.move_to(self.line.get_end()))
         self.add(self.line)
     def update_pendulus(self, mob, dt):
@@ -41,15 +42,17 @@ class PendulusScene(Scene):
     }
     def construct(self):
         frequencies= [freq for freq in np.linspace(0.1, 1, 20)]
+        longitudes= [l for l in np.linspace(.5, 20.5, 20)]
         colors=it.cycle(self.CONFIGURATION['colors'])
         pendulos=VGroup()
         for side in [True, False]:
-            for freq in frequencies:
+            for freq, long in zip(frequencies, longitudes):
                 pendulus=PendulusGroup()
                 pendulus.derecha=side
                 pendulus.frequency=freq/4
+                pendulus.longitud=long
                 pendulus[0].color=next(colors)
                 pendulus[0].set_z_index(-1)
                 pendulos.add(pendulus)
         self.add(pendulos)
-        self.wait(90)
+        self.wait(3)
