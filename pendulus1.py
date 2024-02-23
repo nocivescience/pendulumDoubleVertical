@@ -8,6 +8,7 @@ class PendulusGroup(VGroup):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.time=self.CONFIG['time']
+        self.derecha=True
         self.frequency=0.5
         self.put_dot()
         self.put_line()
@@ -21,12 +22,17 @@ class PendulusGroup(VGroup):
         self.add(self.line)
     def update_pendulus(self, mob, dt):
         self.time+=dt*self.frequency
-        angle_range=np.radians([3, 177])
+        if self.derecha: 
+            angle_range=np.radians([3, 177])
+        else:
+            angle_range=np.radians([357, 183])
         angle=np.mean(angle_range)+np.diff(angle_range)/2*np.sin(2*np.pi*0.5*self.time)
         mob.set_angle(angle+PI/2)
         self.dot.move_to(self.line.get_end())
 class PendulusScene(Scene):
     def construct(self):
-        pendulus=PendulusGroup()
-        self.add(pendulus)
+        pendulus1, pendulus2=PendulusGroup(), PendulusGroup()
+        pendulus1.derecha=True
+        pendulus2.derecha=False
+        self.add(pendulus1, pendulus2)
         self.wait(8)
